@@ -16,13 +16,17 @@ def allowed_file(filename):
 
 app.debug = True
 
-
+'''
+Navigates to the Main Upload Page
+'''
 @app.route('/', methods=['GET'])
 def index():
     # Render the index.html template
     return render_template('index.html')
 
-
+'''
+Post processing upon clicking on the Uplod button which calls Lambda & Store data in S3 Data Storage.
+'''
 @app.route("/upload", methods=["GET", "POST"])
 def handle_upload():
     if request.method == "POST":
@@ -31,7 +35,7 @@ def handle_upload():
 
         if not allowed_file(uploaded_file.filename):
             return "{uploaded_file.filename}" + "File is not allowed!"
-
+        # Generates Unique files name each time the source file is uploaded to s3 for file identification.
         new_filename = uploaded_file.filename + '_' + uuid.uuid4().hex + '.' + uploaded_file.filename.rsplit('.', 1)[1].lower()
 
         bucket_name = "hackathon2024-debugkings"  # Replace with your S3 bucket name

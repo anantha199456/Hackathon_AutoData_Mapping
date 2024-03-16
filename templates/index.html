@@ -1,111 +1,115 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>File Upload</title>
     <style>
-      body {
-        padding: 0;
-        margin: 0;
-        height: 100vh;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-direction: column;
-        gap: 32px;
-        background: lightgray;
-      }
+        body {
+            padding: 20px;
+            font-family: Arial, sans-serif;
+            background-color: #f3f3f3;
+        }
 
-      h1 {
-        color: #000;
-      }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #fff;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
 
-      form {
-        margin: 0 auto;
-        padding: 20px;
-        width: 400px;
-        height: auto;
-        overflow: hidden;
-        background: #ffffff;
-        border-radius: 3px;
-        display: flex;
-      }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
 
-      label {
-        margin: 0;
-        padding: 10px;
-        width: auto;
-        max-width: 300px;
-        height: auto;
-        background-color: #929292;
-        border: none;
-        color: #fff;
-        cursor: pointer;
-        text-align: center;
-        border-radius: 5px;
-        -webkit-border-radius: 5px;
-        -webkit-transition: 0.2s ease all;
-        -moz-transition: 0.2s ease all;
-        -ms-transition: 0.2s ease all;
-        -o-transition: 0.2s ease all;
-        transition: 0.2s ease all;
-      }
+        form {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
 
-      .btn {
-        margin-left: auto;
-        padding: 10px;
-        background-color: #929292;
-        border: none;
-        color: #fff;
-        text-align: center;
-        border-radius: 5px;
-        cursor: pointer;
-      }
+        label {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 8px;
+            text-align: center;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-right: 10px;
+			width: 150px;
+            transition: background-color 0.3s ease;
+        }
 
-      label:hover,
-      .btn:hover {
-        background: #adadad;
-      }
+        label:hover {
+            background-color: #45a049;
+        }
 
-      [type="file"] {
-        display: none;
-      }
+        input[type="file"] {
+            display: none;
+        }
 
-      #info {
-        display: none;
-        margin: 5% auto;
-        padding: 10px 20px;
-        width: 400px;
-        height: auto;
-        overflow: hidden;
-        background: #ffffff;
-        border-radius: 3px;
-      }
+        button[type="submit"] {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+			margin-right: 10px;
+			width: 150px;
+			height: 38px;
+			font-size: 15px;
+            transition: background-color 0.3s ease;
+        }
 
-      #size span,
-      #type span,
-      #name span,.loadingMessage {
-        color: #ea4026;
-      }
+        button[type="submit"]:hover {
+            background-color: #45a049;
+        }
+
+        #info {
+            display: none;
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+
+        #output {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #fff;
+        }
+
+        .loadingMessage {
+            color: #ea4026;
+        }
     </style>
-  </head>
-  <body>
-    <h1>Upload a File</h1>
-    <form method="POST" id="uploadForm" enctype="multipart/form-data">
-      <label for="fileInput">Choose File</label>
-      <input type="file" id="fileInput" name="file" />
-      <button type="submit" class="btn">Upload</button>
+</head>
+<body>
+    <div class="container">
+        <h1>Upload a File</h1>
+        <form method="POST" id="uploadForm" enctype="multipart/form-data">
+            <label for="fileInput">Choose File</label>
+            <input type="file" id="fileInput" name="file" />
+            <button type="submit">Upload</button>
+        </form>
 
-    </form>
+        <div id="info">
+            <p><strong>File Information:</strong></p>
+            <p id="name">File Name: <span></span></p>
+            <p id="size">File Size: <span></span></p>
+            <p id="type">MIME Type: <span></span></p>
+        </div>
 
-    <div id="info">
-      <p id="name">File Name: <span></span></p>
-      <p id="size">File Size: <span></span></p>
-      <p id="type">MIME Type: <span></span></p>
+        <div id="output"></div>
     </div>
-
-    <div id="output"></div>
 
 
     <script>
@@ -205,6 +209,9 @@
             //Remove loading message
             document.getElementById("fileInput").value = "";
             loadingMessage.remove();
+
+            
+            
           }
         });
     </script>

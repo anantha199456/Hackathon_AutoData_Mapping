@@ -18,7 +18,7 @@
       }
 
       h1 {
-        color: #fff;
+        color: #000;
       }
 
       form {
@@ -107,19 +107,13 @@
 
     <div id="output"></div>
 
-    <!-- <h3>Upload to S3</h3>
-
-    <form method="POST" enctype="multipart/form-data" style="margin-bottom: 30px;">
-        <input type="file" name="file-to-save" />
-        <button>Upload</button>
-    </form>
-     -->
 
     <script>
       document.addEventListener("DOMContentLoaded", function () {
         document
           .querySelector("[type=file]")
           .addEventListener("change", function () {
+            document.querySelector("#output").textContent=''
             var file = this.files[0];
             var formdata = new FormData();
             formdata.append("file", file);
@@ -168,6 +162,7 @@
               alert("This file extension is not allowed!");
             }
           });
+          
       });
 
       document
@@ -200,6 +195,8 @@
             const data = await response.json();
             console.log(data);
             document.getElementById("output").innerText = data.report;
+            document.getElementById("info").style.display="none";
+            document.querySelector("label").textContent='Choose File';
           } catch (error) {
             console.error("Error:", error);
           } finally {

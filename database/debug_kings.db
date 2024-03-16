@@ -8,7 +8,8 @@ CREATE TABLE IF NOT EXISTS hackathon_debug_employee (
     performance_rating INT,
     years_experience INT,
     education_level VARCHAR(50),
-    gender ENUM('Male', 'Female') -- Adjust as needed
+    gender ENUM('Male', 'Female'), -- Adjust as needed
+    source_file_name VARCHAR(255)
 );
 
 

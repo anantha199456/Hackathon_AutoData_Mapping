@@ -129,8 +129,8 @@ def append_souce_data_to_rds(source_data, rds_config, table_name):
         query = f"INSERT INTO {table_name} ({', '.join(row.index)}) VALUES ({placeholders})"
         #cursor.execute(f"TRUNCATE TABLE {table_name};")
         cursor.execute(query, tuple(row.values))
-        print(query)
-        print(tuple(row.values))
+        #print(query)
+        #print(tuple(row.values))
     
     connection.commit()
     cursor.close()
@@ -138,7 +138,7 @@ def append_souce_data_to_rds(source_data, rds_config, table_name):
 
 ## Email Methods 
 
-def send_email_with_dataframes(df1, df2, recipient_email, sender_email):
+def send_email_with_dataframes(df1, df2, recipient_email, sender_email,file_name):
     # Convert DataFrames to HTML tables
     html_content1 = df1.to_html(index=False)
     html_content2 = df2.to_html(index=False)
@@ -155,6 +155,7 @@ def send_email_with_dataframes(df1, df2, recipient_email, sender_email):
     <head></head>
     <body>
     <p>Here are the results of Data Mapping Analysis:</p>
+    <p><b>Unique File Name:  {file_name}</b></p>
     <p><b>Matched Columns:</b></p>
     {html_content1}
     <p><b>Non Matched:</b></p>
@@ -191,8 +192,9 @@ def send_email_with_dataframes(df1, df2, recipient_email, sender_email):
 
 def lambda_handler(event, context):
     # Read the filename from the event
-    #file_name = event['file_name']
-    file_name = 'employee.csv'
+    file_name = event['file_name']
+    print(file_name)
+    #file_name = 'employee.csv'
     
     # Read the file from S3 bucket
     bucket_name = 'hackathon2024-debugkings'
@@ -228,7 +230,7 @@ def lambda_handler(event, context):
     df_non_matched = pd.DataFrame(non_matched_columns, columns=["Target column", "Best match", "Score"])
     df_non_matched['Status'] = 'Not Matched'
 
-    #send_email_with_dataframes(df_matched,df_non_matched,'mritunjay.singh@saama.com','anantha19945@gmail.com')
+    send_email_with_dataframes(df_matched,df_non_matched,'mritunjay.singh@saama.com','anantha19945@gmail.com',file_name)
     
     #Merge both the dataframes to provide output to the RDS table
     # Concatenate matched_df and non_matched_df
@@ -272,6 +274,7 @@ def lambda_handler(event, context):
         mapped_data[col] = None
     
     mapped_data = mapped_data[target_columns]
+    mapped_data['source_file_name'] = file_name
     
     
 
@@ -279,5 +282,6 @@ def lambda_handler(event, context):
 
     # Return the report
     return {
-        'report': matched_columns
-    }
+        'statusCode': 200,
+        'body': json.dumps('Successfully Completed')
+   }

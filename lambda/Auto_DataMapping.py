@@ -207,7 +207,7 @@ def lambda_handler(event, context):
   
     # Target columns that needs to be mapped with the Source File Columns.
     str_target_columns = os.environ['target_columns']
-    target_columns = list(str_target_columns)
+    target_columns = list(str_target_columns.split(','))
 
     # Extract source columns from the DataFrame
     source_columns = df.columns.tolist()
@@ -229,7 +229,7 @@ def lambda_handler(event, context):
     df_non_matched['Status'] = 'Not Matched'
 
     recipient_email = os.environ['recipient_email']
-    sender_email = os.environ['recipient_email']
+    sender_email = os.environ['sender_email']
     # Sending email using AWS SES service
     send_email_with_dataframes(df_matched,df_non_matched,recipient_email,sender_email,file_name)
     

@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>File Upload</title>
+    <style>
+      body {
+        padding: 0;
+        margin: 0;
+        height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        gap: 32px;
+        background: lightgray;
+      }
+
+      h1 {
+        color: #fff;
+      }
+
+      form {
+        margin: 0 auto;
+        padding: 20px;
+        width: 400px;
+        height: auto;
+        overflow: hidden;
+        background: #ffffff;
+        border-radius: 3px;
+        display: flex;
+      }
+
+      label {
+        margin: 0;
+        padding: 10px;
+        width: auto;
+        max-width: 300px;
+        height: auto;
+        background-color: #929292;
+        border: none;
+        color: #fff;
+        cursor: pointer;
+        text-align: center;
+        border-radius: 5px;
+        -webkit-border-radius: 5px;
+        -webkit-transition: 0.2s ease all;
+        -moz-transition: 0.2s ease all;
+        -ms-transition: 0.2s ease all;
+        -o-transition: 0.2s ease all;
+        transition: 0.2s ease all;
+      }
+
+      .btn {
+        margin-left: auto;
+        padding: 10px;
+        background-color: #929292;
+        border: none;
+        color: #fff;
+        text-align: center;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+
+      label:hover,
+      .btn:hover {
+        background: #adadad;
+      }
+
+      [type="file"] {
+        display: none;
+      }
+
+      #info {
+        display: none;
+        margin: 5% auto;
+        padding: 10px 20px;
+        width: 400px;
+        height: auto;
+        overflow: hidden;
+        background: #ffffff;
+        border-radius: 3px;
+      }
+
+      #size span,
+      #type span,
+      #name span,.loadingMessage {
+        color: #ea4026;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Upload a File</h1>
+    <form method="POST" id="uploadForm" enctype="multipart/form-data">
+      <label for="fileInput">Choose File</label>
+      <input type="file" id="fileInput" name="file" />
+      <button type="submit" class="btn">Upload</button>
+
+    </form>
+
+    <div id="info">
+      <p id="name">File Name: <span></span></p>
+      <p id="size">File Size: <span></span></p>
+      <p id="type">MIME Type: <span></span></p>
+    </div>
+
+    <div id="output"></div>
+
+    <!-- <h3>Upload to S3</h3>
+
+    <form method="POST" enctype="multipart/form-data" style="margin-bottom: 30px;">
+        <input type="file" name="file-to-save" />
+        <button>Upload</button>
+    </form>
+     -->
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        document
+          .querySelector("[type=file]")
+          .addEventListener("change", function () {
+            var file = this.files[0];
+            var formdata = new FormData();
+            formdata.append("file", file);
+            document.querySelector("#info").style.display = "block";
+            if (file.name.length >= 30) {
+              document.querySelector("#name span").textContent =
+                file.name.substr(0, 30) + "..";
+            } else {
+              document.querySelector("#name span").textContent = file.name;
+            }
+            if (file.size >= 1073741824) {
+              document.querySelector("#size span").textContent =
+                Math.round(file.size / 1073741824) + "GB";
+            } else if (file.size >= 1048576) {
+              document.querySelector("#size span").textContent =
+                Math.round(file.size / 1048576) + "MB";
+            } else if (file.size >= 1024) {
+              document.querySelector("#size span").textContent =
+                Math.round(file.size / 1024) + "KB";
+            } else {
+              document.querySelector("#size span").textContent =
+                Math.round(file.size) + "B";
+            }
+            if (file.type !== "") {
+              document.querySelector("#type span").textContent = file.type;
+            } else {
+              document.querySelector("#type span").textContent = "Unknown";
+            }
+            if (file.name.length >= 30) {
+              document.querySelector("label").textContent =
+                "Chosen : " + file.name.substr(0, 30) + "..";
+            } else {
+              document.querySelector("label").textContent =
+                "Chosen : " + file.name;
+            }
+
+            var ext = document
+              .querySelector("#fileInput")
+              .value.split(".")
+              .pop()
+              .toLowerCase();
+            if (['xlsx', 'csv', 'json'].indexOf(ext) === -1) {
+              document.querySelector("#info").style.display = "none";
+              document.querySelector("label").textContent = "Choose File";
+              document.querySelector("#fileInput").value = "";
+              alert("This file extension is not allowed!");
+            }
+          });
+      });
+
+      document
+        .getElementById("uploadForm")
+        .addEventListener("submit", async function (event) {
+          event.preventDefault();
+
+          // Disable the submit button
+          const submitButton = document.querySelector('button[type="submit"]');
+          submitButton.disabled = true;
+
+          // Show loading message
+          const loadingMessage = document.createElement("span");
+          loadingMessage.classList.add("loadingMessage")
+          loadingMessage.textContent = "File is being processed...";
+          document.getElementById("output").appendChild(loadingMessage);
+
+          const formData = new FormData();
+          formData.append(
+            "file",
+            document.getElementById("fileInput").files[0]
+          );
+
+
+          try {
+            const response = await fetch("http://107.21.246.79:8080/upload", {
+              method: "POST",
+              body: formData
+            });
+            const data = await response.json();
+            console.log(data);
+            document.getElementById("output").innerText = data.report;
+          } catch (error) {
+            console.error("Error:", error);
+          } finally {
+            // Re-enable the submit button
+            submitButton.disabled = false;
+            //Remove loading message
+            document.getElementById("fileInput").value = "";
+            loadingMessage.remove();
+
+            
+            
+          }
+        });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,22 @@
+CREATE TABLE IF NOT EXISTS hackathon_debug_employee (
+    emp_id INT,
+    dept_id INT,
+    emp_name VARCHAR(255),
+    age INT,
+    salary DECIMAL(10, 2), -- Adjust precision and scale as needed
+    hire_date DATE,
+    performance_rating INT,
+    years_experience INT,
+    education_level VARCHAR(50),
+    gender ENUM('Male', 'Female') -- Adjust as needed
+);
+
+
+
+CREATE TABLE IF NOT EXISTS hackathon_debug_report (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    target_column VARCHAR(255),
+    best_match VARCHAR(255),
+    score VARCHAR(255),
+    status VARCHAR(255)
+);
